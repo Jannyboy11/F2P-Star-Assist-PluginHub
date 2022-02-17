@@ -60,9 +60,21 @@ public class StarAssistPlugin extends Plugin {
 
 	public StarAssistPlugin() {
 		this.starCache = new StarCache(removalNotification -> {
-			if (removalNotification.wasEvicted()) {
+			if (removalNotification.wasEvicted()) { //'evicted' meaning: not explicitly removed by a 'StarCache#remove' call.
+				//remove from sidebar.
 				clientThread.invokeLater(this::updatePanel);
 			}
+
+			//if a hint arrow pointing to the removed star exists, then clear it.
+			clientThread.invoke(() -> {
+				CrashedStar removedStar = removalNotification.getValue();
+				if (removedStar.getWorld() == client.getWorld()) {
+					WorldPoint starPoint = StarPoints.fromLocation(removedStar.getLocation());
+					if (client.hasHintArrow() && client.getHintArrowPoint().equals(starPoint)) {
+						client.clearHintArrow();
+					}
+				}
+			});
 		});
 	}
 
@@ -155,11 +167,10 @@ public class StarAssistPlugin extends Plugin {
 				WorldPoint starPoint = StarPoints.fromLocation(star.getLocation());
 				if (whetherTo) {
 					client.setHintArrow(starPoint);
-					break;
 				} else if (client.hasHintArrow() && client.getHintArrowPoint().equals(starPoint)) {
 					client.clearHintArrow();
-					break;
 				}
+				break;
 			}
 		}
 	}
@@ -446,16 +457,13 @@ public class StarAssistPlugin extends Plugin {
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged event) {
 		if (event.getGameState() == GameState.LOGGED_IN) {
-			for (CrashedStar star : starCache.getStars()) {
-				if (star.getWorld() == client.getWorld()) {
-					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "A star has crashed in this world!", null);
-					if (config.hintArrowEnabled()) {
-						client.setHintArrow(StarPoints.fromLocation(star.getLocation()));
-					}
-					break;
-				}
-			}
+			showHintArrow(config.hintArrowEnabled());
 		}
+	}
+
+	@Subscribe
+	public void onWorldChanged(WorldChanged event) {
+		showHintArrow(config.hintArrowEnabled());
 	}
 
 	@Subscribe
