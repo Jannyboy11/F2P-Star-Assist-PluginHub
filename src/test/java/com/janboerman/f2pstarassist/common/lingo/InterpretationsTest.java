@@ -43,4 +43,13 @@ public class InterpretationsTest {
         assertEquals(StarTier.SIZE_1, StarLingo.interpretTier(text));
         assertEquals(453, StarLingo.interpretWorld(text));
     }
+
+    @Test
+    public void testAubury(){
+        String text = "316 aubury t7";
+
+        assertEquals(StarLocation.VARROCK_AUBURY, StarLingo.interpretLocation(text));
+        assertEquals(StarTier.SIZE_7, StarLingo.interpretTier(text));
+        assertEquals(316, StarLingo.interpretWorld(text));
+    }
 }

@@ -103,6 +103,8 @@ public class StarLingo {
                 return StarLocation.VARROCK_SOUTH_EAST_MINE;
             else
                 return StarLocation.VARROCK_AUBURY;
+        if (containsIgnoreCase(text, "aubury"))
+            return StarLocation.VARROCK_AUBURY;
         if (containsAnyIgnoreCase(text, "vsw", "vmw") || (containsIgnoreCase(text, "champ") && containsIgnoreCase(text, "guild")))
             return StarLocation.VARROCK_SOUTH_WEST_MINE;
         if (containsAnyIgnoreCase(text, "vse", "vme"))
