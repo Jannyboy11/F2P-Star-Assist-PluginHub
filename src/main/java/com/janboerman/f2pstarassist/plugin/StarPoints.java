@@ -30,6 +30,7 @@ public class StarPoints {
     static final WorldPoint AL_KHARID_MINE = new WorldPoint(3296, 3298, 0);
     static final WorldPoint AL_KHARID_BANK = new WorldPoint(3276, 3164, 0);
     static final WorldPoint DUEL_ARENA = new WorldPoint(3341, 3267, 0);
+    //TODO will this still be the same location once the PVP Arena releases?
 
     static final WorldPoint CRANDOR_NORTH_MINE = new WorldPoint(2835, 3296, 0);
     static final WorldPoint CRANDOR_SOUTH_MINE = new WorldPoint(2822, 3238, 0);

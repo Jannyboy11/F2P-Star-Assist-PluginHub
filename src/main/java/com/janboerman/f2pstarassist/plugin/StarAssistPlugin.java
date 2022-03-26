@@ -545,7 +545,7 @@ public class StarAssistPlugin extends Plugin {
 
 	@Subscribe
 	public void onChatMessage(ChatMessage event) {
-		String message = event.getMessage();
+		final String message = event.getMessage();
 
 		StarLocation location;
 		int world;

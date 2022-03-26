@@ -61,9 +61,7 @@ public class StarLingo {
     public static StarLocation interpretLocation(String text) {
         //wildy
         if (containsAnyIgnoreCase(text, "wildy", "wilderness"))
-            if (containsAnyIgnoreCase(text, "rune", "runite", "lava", "maze"))
-                return StarLocation.WILDERNESS_RUNITE_MINE;
-            else if (containsAnyIgnoreCase(text, "centre", "center", "bandit", "camp", "hobgoblins"))
+            if (containsAnyIgnoreCase(text, "centre", "center", "bandit", "camp", "hobgoblins"))
                 return StarLocation.WILDERNESS_CENTRE_MINE;
             else if (containsAnyIgnoreCase(text, "dark", "warrior", "fortress")
                     || containsAllIgnoreCase(text, "south", "west"))
@@ -71,13 +69,15 @@ public class StarLingo {
             else if ((containsIgnoreCase(text, "south") && !containsIgnoreCase(text, "west"))
                     || containsAnyIgnoreCase(text, "mage", "zamorak", "zammy"))
                 return StarLocation.WILDERNESS_SOUTH_MINE;
+        if (containsAnyIgnoreCase(text, "rune", "runite", "lava", "maze"))
+            return StarLocation.WILDERNESS_RUNITE_MINE;
 
         //dwarven mine, falador, rimmington, crafting guild
         if (containsAnyIgnoreCase(text, "dwarf", "dwarven"))
             return StarLocation.DWARVEN_MINE;
         if (containsAnyIgnoreCase(text, "falador", "fally", "mining guild"))
             return StarLocation.MINING_GUILD;
-        if (containsIgnoreCase(text, "craft") && containsIgnoreCase(text, "guild"))
+        if (containsIgnoreCase(text, "craft"))
             return StarLocation.CRAFTING_GUILD;
         if (containsIgnoreCase(text, "rim"))
             return StarLocation.RIMMINGTON_MINE;
@@ -90,9 +90,9 @@ public class StarLingo {
                 return StarLocation.LUMBRIDGE_SWAMP_SOUTH_WEST_MINE;
             else if (containsIgnoreCase(text, "east"))
                 return StarLocation.LUMBRIDGE_SWAMP_SOUTH_EAST_MINE;
-        if (containsIgnoreCase(text, "lsw"))
+        if (containsAnyIgnoreCase(text, "lsw", "lmw"))
             return StarLocation.LUMBRIDGE_SWAMP_SOUTH_WEST_MINE;
-        if (containsIgnoreCase(text, "lse"))
+        if (containsAnyIgnoreCase(text, "lse", "lme"))
             return StarLocation.LUMBRIDGE_SWAMP_SOUTH_EAST_MINE;
 
         //varrock
@@ -105,7 +105,7 @@ public class StarLingo {
                 return StarLocation.VARROCK_AUBURY;
         if (containsIgnoreCase(text, "aubury"))
             return StarLocation.VARROCK_AUBURY;
-        if (containsAnyIgnoreCase(text, "vsw", "vmw") || (containsIgnoreCase(text, "champ") && containsIgnoreCase(text, "guild")))
+        if (containsAnyIgnoreCase(text, "vsw", "vmw") || containsAllIgnoreCase(text, "champ", "guild"))
             return StarLocation.VARROCK_SOUTH_WEST_MINE;
         if (containsAnyIgnoreCase(text, "vse", "vme"))
             return StarLocation.VARROCK_SOUTH_EAST_MINE;
@@ -116,8 +116,11 @@ public class StarLingo {
                 return StarLocation.AL_KHARID_BANK;
             else if (containsIgnoreCase(text, "mine"))
                 return StarLocation.AL_KHARID_MINE;
+        if (containsAllIgnoreCase(text, "desert", "mine"))
+            return StarLocation.AL_KHARID_MINE;
         if (containsIgnoreCase(text, "duel"))
             return StarLocation.DUEL_ARENA;
+        //TODO? PVP Arena?
 
         //crandor, corsair cove
         if (containsIgnoreCase(text, "crandor"))

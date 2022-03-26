@@ -52,4 +52,13 @@ public class InterpretationsTest {
         assertEquals(StarTier.SIZE_7, StarLingo.interpretTier(text));
         assertEquals(316, StarLingo.interpretWorld(text));
     }
+
+    @Test
+    public void testDesertMine() {
+        String text = "t6 w301 desert mine";
+
+        assertEquals(StarLocation.AL_KHARID_MINE, StarLingo.interpretLocation(text));
+        assertEquals(StarTier.SIZE_6, StarLingo.interpretTier(text));
+        assertEquals(301, StarLingo.interpretWorld(text));
+    }
 }
