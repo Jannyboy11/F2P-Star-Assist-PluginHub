@@ -6,7 +6,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 public class StarCache {
@@ -84,4 +86,16 @@ public class StarCache {
         return new HashSet<>(cache.asMap().values());
     }
 
+    public void clear() {
+        cache.invalidateAll();
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner stringJoiner = new StringJoiner(", ", "StarCache{", "}");
+        for (Map.Entry<StarKey, CrashedStar> entry : cache.asMap().entrySet()) {
+            stringJoiner.add(entry.getKey() + "=" + entry.getValue().getTier());
+        }
+        return stringJoiner.toString();
+    }
 }

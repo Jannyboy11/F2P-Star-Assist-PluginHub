@@ -9,6 +9,7 @@ import okhttp3.*;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -26,14 +27,14 @@ public class StarClient {
         this.config = config;
     }
 
-    public CompletableFuture<Set<CrashedStar>> requestStars(Set<GroupKey> groups) {
-        final String json = StarJson.groupKeysJson(groups).toString();
+    public CompletableFuture<StarList> requestStars(Set<GroupKey> groups, Set<CrashedStar> knownStars) {
+        final String json = StarJson.starPacketJson(new StarPacket(groups, new StarRequest(knownStars))).toString();
 
         final String url = config.httpUrl() + EndPoints.ALL_STARS;
         final RequestBody requestBody = RequestBody.create(APPLICATION_JSON, json);
         final Request request = new Request.Builder().url(url).post(requestBody).build();
 
-        final CompletableFuture<Set<CrashedStar>> future = new CompletableFuture<>();
+        final CompletableFuture<StarList> future = new CompletableFuture<>();
 
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -57,9 +58,18 @@ public class StarClient {
                     try {
                         JsonElement jsonElement = jsonParser.parse(reader);
                         if (jsonElement instanceof JsonArray) {
-                            future.complete(StarJson.crashedStars((JsonArray) jsonElement));
-                        } else {
-                            future.completeExceptionally(new ResponseException(call, "Expected a json array of crashed stars, but got: " + jsonElement));
+                            //legacy star list: json array of crashed stars
+                            Set<CrashedStar> starSet = StarJson.crashedStars((JsonArray) jsonElement);
+                            StarList starList = new StarList(Collections.singletonMap(starSet, Collections.emptySet()), Collections.emptySet(), Collections.emptySet());
+                            future.complete(starList);
+                        } else if (jsonElement instanceof JsonObject) {
+                            //new star list: is using its own json representation
+                            StarList starList = StarJson.starList((JsonObject) jsonElement);
+                            future.complete(starList);
+                        }
+
+                        else {
+                            future.completeExceptionally(new ResponseException(call, "Expected a json representation of a star list, but got: " + jsonElement));
                         }
                     } catch (RuntimeException e) {
                         future.completeExceptionally(new ResponseException(call, e));

@@ -14,7 +14,7 @@ A plugin for crowdsourcing shooting stars in F2P.
 ## Compiling
 
 Prerequisites:
-- [JDK17](https://jdk.java.net/17/)
+- A JDK, version [17](https://jdk.java.net/17/) or higher
 - [Apache Maven](https://maven.apache.org/)
 
 Then run `mvn clean package` to generate the jar files.

@@ -103,7 +103,7 @@ public class StarPoints {
     public static StarLocation toLocation(WorldPoint starPoint) {
         if (starPoint == WILDERNESS_RUNITE_MINE) return StarLocation.WILDERNESS_RUNITE_MINE;
         if (starPoint == WILDERNESS_CENTRE_MINE) return StarLocation.WILDERNESS_CENTRE_MINE;
-        if (starPoint == WILDERNESS_SOUTH_WEST_MINE) return StarLocation.WILDERNESS_CENTRE_MINE;
+        if (starPoint == WILDERNESS_SOUTH_WEST_MINE) return StarLocation.WILDERNESS_SOUTH_WEST_MINE;
         if (starPoint == WILDERNESS_SOUTH_MINE) return StarLocation.WILDERNESS_SOUTH_MINE;
 
         if (starPoint == DWARVEN_MINE) return StarLocation.DWARVEN_MINE;

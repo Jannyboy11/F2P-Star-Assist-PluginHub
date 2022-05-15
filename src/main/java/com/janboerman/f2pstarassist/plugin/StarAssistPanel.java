@@ -1,6 +1,10 @@
 package com.janboerman.f2pstarassist.plugin;
 
+import com.google.common.html.HtmlEscapers;
 import com.janboerman.f2pstarassist.common.CrashedStar;
+import com.janboerman.f2pstarassist.common.DiscordUser;
+import com.janboerman.f2pstarassist.common.RunescapeUser;
+import com.janboerman.f2pstarassist.common.User;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -13,10 +17,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class StarAssistPanel extends PluginPanel {
 
@@ -51,6 +61,7 @@ public class StarAssistPanel extends PluginPanel {
         } else {
             this.starList.addAll(starList);
             this.starList.sort(Comparator.comparing(CrashedStar::getTier).reversed());
+            //TODO change default sorting: sort by closest location (requires player location as an extra method parameter), then by tier (reversed).
 
             //re-paint
             for (CrashedStar star : this.starList) {
@@ -78,7 +89,29 @@ public class StarAssistPanel extends PluginPanel {
             setLayout(new BorderLayout());
             setBorder(new EmptyBorder(2, 2, 2, 2));
 
-            setToolTipText("Double click to hop to this world.");
+            String foundBy = null;
+            final User finder = star.getDiscoveredBy();
+            if (finder instanceof RunescapeUser) {
+                foundBy = ((RunescapeUser) finder).getName();
+            } else if (finder instanceof DiscordUser) {
+                foundBy = ((DiscordUser) finder).getName();
+            }
+
+            if (foundBy != null) {
+                foundBy = HtmlEscapers.htmlEscaper().escape(foundBy);
+            }
+
+            final Instant detectedAt = star.getDetectedAt();
+            final LocalDateTime localDateTime = LocalDateTime.ofInstant(detectedAt, ZoneId.systemDefault());
+            final String foundAt = localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+            final StringJoiner tooltipText = new StringJoiner("<br>", "<html>", "</html>");
+            if (foundBy != null)
+                tooltipText.add("Found by: " + foundBy);
+            tooltipText.add("Found at: " + foundAt);
+            tooltipText.add("Double click to hop to this world.");
+
+            setToolTipText(tooltipText.toString());
 
             String text = "T" + star.getTier().getSize() + " W" + star.getWorld() + " " + star.getLocation();
             JLabel textLabel = new JLabel(text);
@@ -98,6 +131,8 @@ public class StarAssistPanel extends PluginPanel {
             final JPopupMenu popupMenu = new JPopupMenu();
             popupMenu.setBorder(new EmptyBorder(2, 2, 2, 2));
             popupMenu.add(removeMenuItem);
+            //TODO right click -> copy to clipboard
+
             setComponentPopupMenu(popupMenu);
 
             this.addMouseListener(new MouseAdapter() {
