@@ -111,6 +111,8 @@ public class StarAssistPlugin extends Plugin {
 			clientThread.invoke(() -> fetchStarList(toSet(groups.values())));
 		}, 0, 15, TimeUnit.MINUTES);
 
+		clientThread.invoke(() -> updatePanel());
+
 		log.info("F2P Star Assist started!");
 	}
 
@@ -496,7 +498,7 @@ public class StarAssistPlugin extends Plugin {
 
 					StarTier starTier = getStar(tile);
 					if (starTier == null) {
-						//a star that was in the cache might no longer be there. check whether it still absent in the next tick.
+						//a star that was in the cache is no longer there
 						reportStarGone(star.getKey(), true);
 						if (starPoint.equals(client.getHintArrowPoint())) {
 							client.clearHintArrow();
