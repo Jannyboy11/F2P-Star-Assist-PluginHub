@@ -98,7 +98,7 @@ public class StarLingo {
             return StarLocation.VARROCK_SOUTH_EAST_MINE;
 
         //al kharid, duel arena
-        if (containsAllIgnoreCase(text, "al", "kharid") || containsAnyIgnoreCase(text, "alk", "ally"))
+        if (containsAllIgnoreCase(text, "al", "kharid") || containsAnyIgnoreCase(text, "alk", "ally", "ak"))
             if (containsIgnoreCase(text, "bank"))
                 return StarLocation.AL_KHARID_BANK;
             else if (containsIgnoreCase(text, "mine"))
@@ -123,9 +123,9 @@ public class StarLingo {
 
         //wildy
         if (containsAnyIgnoreCase(text, "wildy", "wilderness"))
-            if (containsAnyIgnoreCase(text, "centre", "center", "bandit", "camp", "hobgoblins", "skeles", "skeletons"))
+            if (containsAnyIgnoreCase(text, "centre", "center", "bandit", "camp", "hobgoblins"))
                 return StarLocation.WILDERNESS_CENTRE_MINE;
-            else if (containsAnyIgnoreCase(text, "dark", "warrior", "fortress")
+            else if (containsAnyIgnoreCase(text, "dark", "warrior", "fortress", "skeles", "skeletons")
                     || containsAllIgnoreCase(text, "south", "west"))
                 return StarLocation.WILDERNESS_SOUTH_WEST_MINE;
             else if ((containsIgnoreCase(text, "south") && !containsIgnoreCase(text, "west"))
