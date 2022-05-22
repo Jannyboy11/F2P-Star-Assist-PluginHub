@@ -13,6 +13,8 @@ import net.runelite.client.ui.PluginPanel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -77,6 +79,7 @@ public class StarAssistPanel extends PluginPanel {
     private class StarAssistPanelRow extends JPanel {
 
         private final JMenuItem removeMenuItem;
+        private final JMenuItem copyToClipboardMenuItem;
 
         private final CrashedStar star;
 
@@ -113,13 +116,27 @@ public class StarAssistPanel extends PluginPanel {
 
             setToolTipText(tooltipText.toString());
 
-            String text = "T" + star.getTier().getSize() + " W" + star.getWorld() + " " + star.getLocation();
-            JLabel textLabel = new JLabel(text);
+            final String text = "T" + star.getTier().getSize() + " W" + star.getWorld() + " " + star.getLocation();
+            final JLabel textLabel = new JLabel(text);
             textLabel.setFont(FontManager.getRunescapeSmallFont());
             add(textLabel);
 
+            //right-click menu:
+            final JPopupMenu popupMenu = new JPopupMenu();
+            popupMenu.setBorder(new EmptyBorder(2, 2, 2, 2));
+            //right-click -> copy to clipboard option
+            copyToClipboardMenuItem = new JMenuItem("Copy to clipboard"); //TODO icon?
+            copyToClipboardMenuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    StringSelection selection = new StringSelection(text);
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(selection, selection);
+                }
+            });
+            popupMenu.add(copyToClipboardMenuItem);
             //right click -> remove option
-            removeMenuItem = new JMenuItem("Remove");
+            removeMenuItem = new JMenuItem("Remove"); //TODO icon?
             removeMenuItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -128,16 +145,14 @@ public class StarAssistPanel extends PluginPanel {
                     clientThread.invoke(() -> plugin.removeStar(star.getKey()));    //remove from local cache
                 }
             });
-            final JPopupMenu popupMenu = new JPopupMenu();
-            popupMenu.setBorder(new EmptyBorder(2, 2, 2, 2));
             popupMenu.add(removeMenuItem);
-            //TODO right click -> copy to clipboard
 
             setComponentPopupMenu(popupMenu);
 
             this.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent event) {
+                    //TODO this does not always seem to work reliably:
                     if (event.getClickCount() == 2) {
                         plugin.hopAndHint(star);
                     }

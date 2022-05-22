@@ -20,6 +20,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.WorldUtil;
 import okhttp3.Call;
@@ -52,9 +53,11 @@ public class StarAssistPlugin extends Plugin {
 	@Inject private WorldService worldService;
 	@Inject private ClientThread clientThread;
 	@Inject private StarAssistConfig config;
+	@Inject private OverlayManager overlayManager;
 
 	//populated on start-up
 	private StarClient starClient;
+	private DoubleHoppingTilesOverlay doubleHoppingTilesOverlay;
 	private ScheduledExecutorService fetcherTimer;
 	private StarAssistPanel panel;
 	private NavigationButton navButton;
@@ -93,6 +96,9 @@ public class StarAssistPlugin extends Plugin {
 	@Override
 	protected void startUp() throws Exception {
 		this.starClient = injector.getInstance(StarClient.class);
+		this.doubleHoppingTilesOverlay= injector.getInstance(DoubleHoppingTilesOverlay.class);
+		overlayManager.add(doubleHoppingTilesOverlay);
+
 		this.panel = new StarAssistPanel(this, config, clientThread);
 		BufferedImage icon = ImageUtil.loadImageResource(StarAssistPlugin.class, "/icon.png");
 		this.navButton = NavigationButton.builder()
@@ -118,7 +124,9 @@ public class StarAssistPlugin extends Plugin {
 
 	@Override
 	protected void shutDown() throws Exception {
+		overlayManager.remove(doubleHoppingTilesOverlay);
 		clientToolbar.removeNavigation(navButton);
+
 		fetcherTimer.shutdownNow();
 		fetcherTimer = null;
 
@@ -488,6 +496,18 @@ public class StarAssistPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onGameStateChanged(GameStateChanged event) {
+		if (event.getGameState() == GameState.LOGGED_IN) {
+			showHintArrow(config.hintArrowEnabled());
+		}
+	}
+
+	@Subscribe
+	public void onWorldChanged(WorldChanged event) {
+		showHintArrow(config.hintArrowEnabled());
+	}
+
+	@Subscribe
 	public void onGameTick(GameTick event) {
 		for (CrashedStar star : starCache.getStars()) {
 			if (client.getWorld() == star.getWorld()) {
@@ -510,70 +530,6 @@ public class StarAssistPlugin extends Plugin {
 						client.clearHintArrow();
 					}
 				}
-			}
-		}
-	}
-
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged event) {
-		if (event.getGameState() == GameState.LOGGED_IN) {
-			showHintArrow(config.hintArrowEnabled());
-		}
-	}
-
-	@Subscribe
-	public void onWorldChanged(WorldChanged event) {
-		showHintArrow(config.hintArrowEnabled());
-	}
-
-	@Subscribe
-	public void onGameObjectDespawned(GameObjectDespawned event) {
-		if (client.getGameState() != GameState.LOGGED_IN) return;	//player not in the world
-
-		GameObject gameObject = event.getGameObject();
-		StarTier starTier = StarIds.getTier(gameObject.getId());
-		if (starTier == null) return;	//not a star
-
-		WorldPoint worldPoint = gameObject.getWorldLocation();
-		StarLocation starLocation = StarPoints.toLocation(worldPoint);
-		if (starLocation == null) {
-			log.error("Unrecognised star location at world point: " + worldPoint);
-			return;
-		}
-		StarKey starKey = new StarKey(starLocation, client.getWorld());
-
-		log.debug("A " + starTier + " star just despawned at location: " + worldPoint + ".");
-
-		if (playerInStarRange(worldPoint)) {
-			if (starTier == StarTier.SIZE_1) {
-				//the star was mined out completely, or it poofed at t1.
-				reportStarGone(starKey, true);
-			} else {
-				//it either degraded one tier, or disintegrated completely (poofed).
-				//check whether a new star exists in the next game tick
-				clientThread.invokeLater(() -> {
-					if (client.getGameState() == GameState.LOGGED_IN && playerInStarRange(worldPoint)) {
-						LocalPoint localStarPoint = LocalPoint.fromWorld(client, worldPoint);
-						Tile tile = client.getScene().getTiles()[worldPoint.getPlane()][localStarPoint.getSceneX()][localStarPoint.getSceneY()];
-
-						StarTier newTier = null;
-						for (GameObject go : tile.getGameObjects()) {
-							if (go != null) {
-								StarTier tier = StarIds.getTier(go.getId());
-								if (tier == starTier.oneLess()) {
-									//a new star exists
-									newTier = tier;
-									break;
-								}
-							}
-						}
-
-						if (newTier == null) {
-							//the star has poofed
-							reportStarGone(starKey, true);
-						}
-					}
-				});
 			}
 		}
 	}
@@ -609,6 +565,7 @@ public class StarAssistPlugin extends Plugin {
 	}
 
 	// If stars degrade, they just de-spawn and spawn a new one at a lower tier. The GameObjectChanged event is never called.
+	// We don't listen on GameObjectDespawned, because onGameTick already handles disintegrated stars.
 
 	private boolean isWorld(int world) {
 		net.runelite.http.api.worlds.WorldResult worldResult = worldService.getWorlds();

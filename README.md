@@ -6,9 +6,10 @@ A plugin for crowdsourcing shooting stars in F2P.
 
 - Sidebar panel with list of known stars.
     - Double-click a star entry to hop to the world of a star.
-    - Right-click to remove entries.
-- Analyzes chat messages for star calls.
+    - Right-click menu to copy to clipboard or remove from list.
+- Analyses chat messages for star calls.
 - Arrow hint for a star found in your world.
+- Tile markers for double hopping locations.
 - Optional: Communication with a webserver to share your stars with others.
 
 ### Group communication settings
@@ -73,8 +74,8 @@ For 4 different chat message types you can configure to which groups they are sh
 
 E.g. continuing the example of star hunting with two separated groups (cc and fc) use the following configuration:
 
-At `Share friends chat calls with group:` configure it as `A Friend's chat`. \
-At `Share clan chat calls with group:` configure it as `BestClanOSRS`.
+At `Share friends chat calls with groups:` configure it as `A Friend's chat`. \
+At `Share clan chat calls with groups:` configure it as `BestClanOSRS`.
 
 To share calls with multiple groups, you can put multiple group names in the same text box, separated by a semicolon.
 

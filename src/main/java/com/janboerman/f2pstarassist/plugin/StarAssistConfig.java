@@ -141,7 +141,7 @@ public interface StarAssistConfig extends Config {
 	@ConfigItem(
 			position = 4,
 			keyName = "share private chat calls",
-			name = "Share private chat calls with group:",
+			name = "Share private chat calls with groups:",
 			description = "Share private chat calls with your group",
 			section = SHARING_SETTINGS_SECTION
 	)
@@ -152,7 +152,7 @@ public interface StarAssistConfig extends Config {
 	@ConfigItem(
 			position = 5,
 			keyName = "share friends chat calls",
-			name = "Share friends chat calls with group:",
+			name = "Share friends chat calls with groups:",
 			description = "Share friends chat calls with your group",
 			section = SHARING_SETTINGS_SECTION
 	)
@@ -163,7 +163,7 @@ public interface StarAssistConfig extends Config {
 	@ConfigItem(
 			position = 6,
 			keyName = "share clan chat calls",
-			name = "Share clan chat calls with group:",
+			name = "Share clan chat calls with groups:",
 			description = "Share clan chat calls with your group",
 			section = SHARING_SETTINGS_SECTION
 	)
@@ -174,7 +174,7 @@ public interface StarAssistConfig extends Config {
 	@ConfigItem(
 			position = 7,
 			keyName = "share public chat calls",
-			name = "Share public chat calls with group:",
+			name = "Share public chat calls with groups:",
 			description = "Share public chat calls with your group",
 			section = SHARING_SETTINGS_SECTION
 	)
@@ -252,12 +252,12 @@ public interface StarAssistConfig extends Config {
 	//																							\\
 
 	@ConfigSection(
-			name = "Hint Arrow Settings",
-			description = "Settings for hint arrows",
+			name = "Miscellaneous Settings",
+			description = "Settings that don't belong in any other category",
 			position = 4,
 			closedByDefault = false
 	)
-	public static final String HINT_ARROW = "Hint Arrow Settings";
+	public static final String MISCELLANEOUS = "Miscellaneous Settings";
 
 	//																							\\
 	//																							\\
@@ -267,16 +267,28 @@ public interface StarAssistConfig extends Config {
 			keyName = "hint enabled",
 			name = "Enable arrow hints",
 			description = "Whether to display an arrow that hints to the target location",
-			section = HINT_ARROW
+			section = MISCELLANEOUS
 	)
 	default boolean hintArrowEnabled() {
 		return false;
 	}
 
+	@ConfigItem(
+			position = 14,
+			keyName = "double hopping locations",
+			name = "Mark double hopping location tiles",
+			description = "Enable tile markers for double hopping locations.<br>" +
+					"F2P Double Hopping spots:<br>" +
+					"- Between Crafting Guild and Rimmington mine<br>" +
+					"- Between Desert mine and Duel Arena<br>" +
+					"- Between Aubury and Varrock east mine (1 tile diff)",
+			section = MISCELLANEOUS
+	)
+	default boolean markDoubleHoppingTiles() {
+		return false;
+	}
+
 	//																							\\
 	// ========================================================================================	\\
-
-	//TODO tile markers for star landing sites
-	//TODO tile markers for hopping locations for (duel arena, al kharid mine) and (rimmington mine, crafting guild)
 
 }
