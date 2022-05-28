@@ -24,7 +24,7 @@ public class DoubleHoppingTilesOverlay extends Overlay {
     }
 
     private static final DoubleHoppingTile[] doubleHoppingTiles = {
-            new DoubleHoppingTile("Crafting Guild / Rimmington hopping location", new WorldPoint(2985, 3265, 0)),
+            new DoubleHoppingTile("Crafting Guild / Rimmington hopping location", new WorldPoint(2958, 3265, 0)),
             new DoubleHoppingTile("Desert mine / Duel Arena hopping location", new WorldPoint(3318, 3282, 0)),
             new DoubleHoppingTile("Varrock west bank hopping location", new WorldPoint(3264, 3384, 0)),
             new DoubleHoppingTile("Varrock south east mine hopping location", new WorldPoint(3264, 3383, 0)),
@@ -36,7 +36,7 @@ public class DoubleHoppingTilesOverlay extends Overlay {
     private final StarAssistConfig config;
 
     @Inject
-    DoubleHoppingTilesOverlay(Client client, StarAssistConfig config) {
+    public DoubleHoppingTilesOverlay(Client client, StarAssistConfig config) {
         this.client = client;
         this.config = config;
 
@@ -62,19 +62,18 @@ public class DoubleHoppingTilesOverlay extends Overlay {
     }
 
     private void drawTile(Graphics2D graphics, WorldPoint point, Color colour, String label, Stroke borderStroke) {
-        WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
-
+        final WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
         if (point.distanceTo(playerLocation) >= MAX_DRAW_DISTANCE) return;
 
-        LocalPoint lp = LocalPoint.fromWorld(client, point);
-        if (lp == null) return;
+        final LocalPoint localPoint = LocalPoint.fromWorld(client, point);
+        if (localPoint == null) return;
 
-        Polygon polygon = Perspective.getCanvasTilePoly(client, lp);
+        final Polygon polygon = Perspective.getCanvasTilePoly(client, localPoint);    //for some weird reason, this draws two tiles(!) for the CraftingGuild / Rimmington mine location!
         if (polygon != null) {
             OverlayUtil.renderPolygon(graphics, polygon, colour, new Color(0, 0, 0, /*fill opacity*/50), borderStroke);
         }
 
-        Point canvasTextLocation = Perspective.getCanvasTextLocation(client, graphics, lp, label, 0);
+        final Point canvasTextLocation = Perspective.getCanvasTextLocation(client, graphics, localPoint, label, 0);
         if (canvasTextLocation != null) {
             OverlayUtil.renderTextLocation(graphics, canvasTextLocation, label, colour);
         }

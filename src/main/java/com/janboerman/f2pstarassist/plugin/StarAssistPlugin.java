@@ -23,6 +23,7 @@ import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.WorldUtil;
+import net.runelite.http.api.worlds.WorldResult;
 import okhttp3.Call;
 import okio.Buffer;
 
@@ -295,8 +296,8 @@ public class StarAssistPlugin extends Plugin {
 	private boolean shouldBroadcastStar(StarKey starKey) {
 		if (!config.httpConnectionEnabled()) return false;
 
-		net.runelite.http.api.worlds.World w = worldService.getWorlds().findWorld(starKey.getWorld());
-		boolean isPvP = w.getTypes().contains(net.runelite.http.api.worlds.WorldType.PVP);
+		WorldResult worldResult = worldService.getWorlds();	//worldResult can be null when RuneLite's WorldService breaks after a game update
+		boolean isPvP = worldResult != null && worldResult.findWorld(starKey.getWorld()).getTypes().contains(net.runelite.http.api.worlds.WorldType.PVP);
 		boolean isWilderness = starKey.getLocation().isInWilderness();
 		return (config.sharePvpWorldStars() || !isPvP) && (config.shareWildernessStars() || !isWilderness);
 	}
@@ -518,11 +519,16 @@ public class StarAssistPlugin extends Plugin {
 
 					StarTier starTier = getStar(tile);
 					if (starTier == null) {
-						//a star that was in the cache is no longer there
-						reportStarGone(star.getKey(), true);
-						if (starPoint.equals(client.getHintArrowPoint())) {
-							client.clearHintArrow();
-						}
+						//a star that was in the cache is no longer there.
+						clientThread.invokeLater(() -> {
+							if (getStar(tile) == null) {
+								//if in the next tick there is still no star, report it as gone.
+								reportStarGone(star.getKey(), true);
+								if (starPoint.equals(client.getHintArrowPoint())) {
+									client.clearHintArrow();
+								}
+							}
+						});
 					}
 
 					else if (playerInRange(starPoint, 4) && starPoint.equals(client.getHintArrowPoint())) {
