@@ -68,7 +68,7 @@ public class DoubleHoppingTilesOverlay extends Overlay {
         final LocalPoint localPoint = LocalPoint.fromWorld(client, point);
         if (localPoint == null) return;
 
-        final Polygon polygon = Perspective.getCanvasTilePoly(client, localPoint);    //for some weird reason, this draws two tiles(!) for the CraftingGuild / Rimmington mine location!
+        final Polygon polygon = Perspective.getCanvasTilePoly(client, localPoint);
         if (polygon != null) {
             OverlayUtil.renderPolygon(graphics, polygon, colour, new Color(0, 0, 0, /*fill opacity*/50), borderStroke);
         }
