@@ -61,4 +61,22 @@ public class InterpretationsTest {
         assertEquals(StarTier.SIZE_6, StarLingo.interpretTier(text));
         assertEquals(301, StarLingo.interpretWorld(text));
     }
+
+    @Test
+    public void testVarrockEastBank() {
+        String text = "T7 varrock east bank w425";
+
+        assertEquals(StarLocation.VARROCK_AUBURY, StarLingo.interpretLocation(text));
+        assertEquals(StarTier.SIZE_7, StarLingo.interpretTier(text));
+        assertEquals(425, StarLingo.interpretWorld(text));
+    }
+
+    // sanity-check toString
+    @Test
+    public void testToStringRoundTrip() {
+        for (StarLocation location : StarLocation.values()) {
+            assertEquals(location, StarLingo.interpretLocation(location.toString()));
+        }
+    }
+
 }

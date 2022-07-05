@@ -79,6 +79,9 @@ At `Share clan chat calls with groups:` configure it as `BestClanOSRS`.
 
 To share calls with multiple groups, you can put multiple group names in the same text box, separated by a semicolon.
 
+### Need to know more?
+Join my [Discord](https://discord.gg/VM9tQCAdjG), or [create an issue](https://github.com/Jannyboy11/F2P-Star-Assist/issues).
+
 ## Compiling
 
 Prerequisites:

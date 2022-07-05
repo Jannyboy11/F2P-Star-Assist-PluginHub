@@ -73,10 +73,10 @@ public class StarLingo {
         if (containsIgnoreCase(text, "draynor"))
             return StarLocation.DRAYNOR_VILLAGE_BANK;
         if (containsAnyIgnoreCase(text, "lumbridge", "swamp", "lumby"))
-            if (containsAnyIgnoreCase(text, "west", "sw"))
-                return StarLocation.LUMBRIDGE_SWAMP_SOUTH_WEST_MINE;
-            else if (containsAnyIgnoreCase(text, "east", "se"))
+            if (containsAnyIgnoreCase(text, "east", "se"))
                 return StarLocation.LUMBRIDGE_SWAMP_SOUTH_EAST_MINE;
+            else if (containsAnyIgnoreCase(text, "west", "sw")) //test this after lumbridge swamp east mine becase 'swamp' contains 'sw'
+                return StarLocation.LUMBRIDGE_SWAMP_SOUTH_WEST_MINE;
         if (containsAnyIgnoreCase(text, "lsw", "lmw", "swl"))
             return StarLocation.LUMBRIDGE_SWAMP_SOUTH_WEST_MINE;
         if (containsAnyIgnoreCase(text, "lse", "lme", "sel"))
@@ -84,7 +84,9 @@ public class StarLingo {
 
         //varrock
         if (containsIgnoreCase(text, "varrock"))
-            if (containsAnyIgnoreCase(text, "west", "sw"))
+            if (containsIgnoreCase(text, "bank"))
+                return StarLocation.VARROCK_AUBURY;
+            else if (containsAnyIgnoreCase(text, "west", "sw"))
                 return StarLocation.VARROCK_SOUTH_WEST_MINE;
             else if (containsAnyIgnoreCase(text, "east", "se"))
                 return StarLocation.VARROCK_SOUTH_EAST_MINE;
