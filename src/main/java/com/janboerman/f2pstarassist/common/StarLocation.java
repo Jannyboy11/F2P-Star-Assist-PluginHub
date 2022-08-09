@@ -22,8 +22,7 @@ public enum StarLocation {
 
     AL_KHARID_MINE("Al Kharid mine"),
     AL_KHARID_BANK("Al Kharid bank"),
-    DUEL_ARENA("Duel Arena"),
-    //TODO check whether I need a new location for the pvp arena
+    PVP_ARENA("PvP Arena"),
 
     CRANDOR_NORTH_MINE("Crandor north mine"),
     CRANDOR_SOUTH_MINE("Crandor south mine"),

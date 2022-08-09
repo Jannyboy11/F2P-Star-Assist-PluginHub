@@ -29,8 +29,8 @@ public class StarPoints {
 
     static final WorldPoint AL_KHARID_MINE = new WorldPoint(3296, 3298, 0);
     static final WorldPoint AL_KHARID_BANK = new WorldPoint(3276, 3164, 0);
-    static final WorldPoint DUEL_ARENA = new WorldPoint(3341, 3267, 0);
-    //TODO will this still be the same location once the PVP Arena releases?
+    //static final WorldPoint DUEL_ARENA = new WorldPoint(3341, 3267, 0); //R.I.P. Duel Arena 2022-07-13
+    static final WorldPoint PVP_ARENA = new WorldPoint(3351, 3281, 0);
 
     static final WorldPoint CRANDOR_NORTH_MINE = new WorldPoint(2835, 3296, 0);
     static final WorldPoint CRANDOR_SOUTH_MINE = new WorldPoint(2822, 3238, 0);
@@ -59,7 +59,7 @@ public class StarPoints {
 
         LOCATIONS.put(AL_KHARID_MINE, StarLocation.AL_KHARID_MINE);
         LOCATIONS.put(AL_KHARID_BANK, StarLocation.AL_KHARID_BANK);
-        LOCATIONS.put(DUEL_ARENA, StarLocation.DUEL_ARENA);
+        LOCATIONS.put(PVP_ARENA, StarLocation.PVP_ARENA);
 
         LOCATIONS.put(CRANDOR_NORTH_MINE, StarLocation.CRANDOR_NORTH_MINE);
         LOCATIONS.put(CRANDOR_SOUTH_MINE, StarLocation.CRANDOR_SOUTH_MINE);
@@ -89,7 +89,7 @@ public class StarPoints {
 
             case AL_KHARID_MINE: return AL_KHARID_MINE;
             case AL_KHARID_BANK: return AL_KHARID_BANK;
-            case DUEL_ARENA: return DUEL_ARENA;
+            case PVP_ARENA: return PVP_ARENA;
 
             case CRANDOR_NORTH_MINE: return CRANDOR_NORTH_MINE;
             case CRANDOR_SOUTH_MINE: return CRANDOR_SOUTH_MINE;
@@ -121,7 +121,7 @@ public class StarPoints {
 
         if (starPoint == AL_KHARID_MINE) return StarLocation.AL_KHARID_MINE;
         if (starPoint == AL_KHARID_BANK) return StarLocation.AL_KHARID_BANK;
-        if (starPoint == DUEL_ARENA) return StarLocation.DUEL_ARENA;
+        if (starPoint == PVP_ARENA) return StarLocation.PVP_ARENA;
 
         if (starPoint == CRANDOR_NORTH_MINE) return StarLocation.CRANDOR_NORTH_MINE;
         if (starPoint == CRANDOR_SOUTH_MINE) return StarLocation.CRANDOR_SOUTH_MINE;

@@ -25,7 +25,7 @@ public class DoubleHoppingTilesOverlay extends Overlay {
 
     private static final DoubleHoppingTile[] doubleHoppingTiles = {
             new DoubleHoppingTile("Crafting Guild / Rimmington hopping location", new WorldPoint(2958, 3265, 0)),
-            new DoubleHoppingTile("Desert mine / Duel Arena hopping location", new WorldPoint(3318, 3282, 0)),
+            new DoubleHoppingTile("Desert mine / PvP Arena hopping location", new WorldPoint(3323, 3289, 0)),
             new DoubleHoppingTile("Varrock west bank hopping location", new WorldPoint(3264, 3384, 0)),
             new DoubleHoppingTile("Varrock south east mine hopping location", new WorldPoint(3264, 3383, 0)),
     };

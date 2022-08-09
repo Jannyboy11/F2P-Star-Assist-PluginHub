@@ -172,7 +172,12 @@ public class StarJson {
     }
 
     private static StarLocation readLocation(JsonObject crashedStar) {
-        return StarLocation.valueOf(crashedStar.get("location").getAsString());
+        String locationString = crashedStar.get("location").getAsString();
+        if ("DUEL_ARENA".equals(locationString)) {
+            return StarLocation.PVP_ARENA;
+        } else {
+            return StarLocation.valueOf(locationString);
+        }
     }
 
     private static void writeLocation(JsonObject crashedStar, StarLocation starLocation) {
