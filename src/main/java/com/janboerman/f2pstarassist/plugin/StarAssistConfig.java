@@ -281,7 +281,8 @@ public interface StarAssistConfig extends Config {
 					"F2P Double Hopping spots:<br>" +
 					"- Between Crafting Guild and Rimmington mine<br>" +
 					"- Between Desert mine and PvP Arena<br>" +
-					"- Between Aubury and Varrock east mine (1 tile diff)",
+					"- Between Aubury and Varrock east mine (1 tile diff)<br>" +
+					"- Between Lumbridge Swamp south east and Al Kharid bank (3 tile diff)",
 			section = MISCELLANEOUS
 	)
 	default boolean markDoubleHoppingTiles() {
