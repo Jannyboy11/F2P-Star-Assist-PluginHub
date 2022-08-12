@@ -5,11 +5,14 @@ import com.janboerman.f2pstarassist.common.CrashedStar;
 import com.janboerman.f2pstarassist.common.DiscordUser;
 import com.janboerman.f2pstarassist.common.RunescapeUser;
 import com.janboerman.f2pstarassist.common.User;
+import net.runelite.api.Client;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -21,7 +24,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,12 +42,14 @@ public class StarAssistPanel extends PluginPanel {
 
     private final StarAssistPlugin plugin;
     private final StarAssistConfig config;
+    private final Client client;
     private final ClientThread clientThread;
     private final List<CrashedStar> starList = new ArrayList<>(2);
 
-    public StarAssistPanel(StarAssistPlugin plugin, StarAssistConfig config, ClientThread clientThread) {
+    public StarAssistPanel(StarAssistPlugin plugin, StarAssistConfig config, Client client, ClientThread clientThread) {
         this.plugin = plugin;
         this.config = config;
+        this.client = client;
         this.clientThread = clientThread;
 
         setLayout(new GridLayout(0, 1));
@@ -53,7 +57,19 @@ public class StarAssistPanel extends PluginPanel {
         //TODO a refresh button?
     }
 
-    public void setStars(Collection<CrashedStar> starList) {
+    private static Comparator<CrashedStar> compareByLocation(@Nullable WorldPoint playerLocation) {
+        if (playerLocation != null && playerLocation.getPlane() == 0) {
+            return (star1, star2) -> {
+                WorldPoint star1Point = StarPoints.fromLocation(star1.getLocation());
+                WorldPoint star2Point = StarPoints.fromLocation(star2.getLocation());
+                return Integer.compare(star1Point.distanceTo2D(playerLocation), star2Point.distanceTo2D(playerLocation));
+            };
+        } else {
+            return Comparator.comparing(CrashedStar::getLocation);
+        }
+    }
+
+    public void setStars(Collection<CrashedStar> starList, @Nullable WorldPoint playerLocation) {
         this.removeAll();
 
         this.starList.clear();
@@ -62,8 +78,7 @@ public class StarAssistPanel extends PluginPanel {
             add(NO_STARS_PANEL);
         } else {
             this.starList.addAll(starList);
-            this.starList.sort(Comparator.comparing(CrashedStar::getTier).reversed());
-            //TODO change default sorting: sort by closest location (requires player location as an extra method parameter), then by tier (reversed).
+            this.starList.sort(compareByLocation(playerLocation).thenComparing(Comparator.comparing(CrashedStar::getTier).reversed()));
 
             //re-paint
             for (CrashedStar star : this.starList) {
@@ -141,8 +156,14 @@ public class StarAssistPanel extends PluginPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     starList.remove(star);
-                    setStars(new ArrayList<>(starList));    //causes re-paint
-                    clientThread.invoke(() -> plugin.removeStar(star.getKey()));    //remove from local cache
+                    clientThread.invoke(() -> {
+                        //remove from local cache
+                        plugin.removeStar(star.getKey());
+
+                        //re-paint panel
+                        WorldPoint playerLocation = plugin.getLocalPlayerLocation();
+                        SwingUtilities.invokeLater(() -> setStars(new ArrayList<>(starList), playerLocation));
+                    });
                 }
             });
             popupMenu.add(removeMenuItem);

@@ -100,7 +100,7 @@ public class StarAssistPlugin extends Plugin {
 		this.doubleHoppingTilesOverlay= injector.getInstance(DoubleHoppingTilesOverlay.class);
 		overlayManager.add(doubleHoppingTilesOverlay);
 
-		this.panel = new StarAssistPanel(this, config, clientThread);
+		this.panel = new StarAssistPanel(this, config, client, clientThread);
 		BufferedImage icon = ImageUtil.loadImageResource(StarAssistPlugin.class, "/icon.png");
 		this.navButton = NavigationButton.builder()
 				.tooltip("F2P Star Assist")
@@ -432,12 +432,21 @@ public class StarAssistPlugin extends Plugin {
 		}
 	}
 
+	@Nullable WorldPoint getLocalPlayerLocation() {
+		assert client.isClientThread() : "getLocalPlayerLocation must be called from the client thread!";
+
+		Player localPlayer = client.getLocalPlayer();
+		return localPlayer == null ? null : localPlayer.getWorldLocation();
+	}
+
 	private void updatePanel() {
 		log.debug("Panel repaint!");
 		assert client.isClientThread() : "updatePanel must be called from the client thread!";
 
 		Set<CrashedStar> stars = new HashSet<>(starCache.getStars());
-		SwingUtilities.invokeLater(() -> panel.setStars(stars));
+		WorldPoint playerLocation = getLocalPlayerLocation();
+
+		SwingUtilities.invokeLater(() -> panel.setStars(stars, playerLocation));
 	}
 
 
@@ -567,6 +576,11 @@ public class StarAssistPlugin extends Plugin {
 			if (upToDateTier != null) {
 				reportStarUpdate(starKey, upToDateTier, true);
 			}
+		}
+
+		//show hint arrow
+		if (config.hintArrowEnabled() && !client.hasHintArrow()) {
+			client.setHintArrow(worldPoint);
 		}
 	}
 

@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.Objects;
 
-public final class CrashedStar implements Comparable<CrashedStar>, Payload {
+public final class CrashedStar implements Comparable<CrashedStar>, Payload, Cloneable {
 
     private static final Comparator<CrashedStar> COMPARATOR = Comparator
             .comparing(CrashedStar::getTier)
@@ -33,6 +33,11 @@ public final class CrashedStar implements Comparable<CrashedStar>, Payload {
 
     public CrashedStar(StarKey key, StarTier tier, Instant detectedAt, User discoveredBy) {
         this(tier, key.getLocation(), key.getWorld(), detectedAt, discoveredBy);
+    }
+
+    @Override
+    public CrashedStar clone() {
+        return new CrashedStar(tier, location, world, detectedAt, discoveredBy);
     }
 
     public synchronized StarTier getTier() {
