@@ -135,7 +135,7 @@ public class StarAssistPanel extends PluginPanel {
 
             if(text.contains("{world}") && text.contains("{tier}") && text.contains("{location}")){ // if provided format is valid
                 text.replace("{world}", star.getWorld());
-                text.replace("{tier}", star.getTier().getSize());
+                text.replace("{tier}", "T"+star.getTier().getSize());
                 text.replace("{location}", star.getLocation());
             }else{ // otherwise default
                 text = "T" + star.getTier().getSize() + " W" + star.getWorld() + " " + star.getLocation();
