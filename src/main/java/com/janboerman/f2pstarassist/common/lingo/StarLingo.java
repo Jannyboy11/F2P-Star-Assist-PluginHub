@@ -60,17 +60,17 @@ public class StarLingo {
     //TODO return a Set<StarLocation> instead? then it's possible to return multiple locations if it's ambiguous (e.g. just 'Crandor')
     public static StarLocation interpretLocation(String text) {
         //dwarven mine, falador, rimmington, crafting guild
-        if (containsAnyIgnoreCase(text, "dwarf", "dwarven"))
+        if (containsAnyIgnoreCase(text, "dwarf", "dwarven", "ice"))
             return StarLocation.DWARVEN_MINE;
         if (containsAnyIgnoreCase(text, "falador", "fally", "mining guild"))
             return StarLocation.MINING_GUILD;
-        if (containsIgnoreCase(text, "craft"))
+        if (containsAnyIgnoreCase(text, "craft", "cg"))
             return StarLocation.CRAFTING_GUILD;
         if (containsIgnoreCase(text, "rim"))
             return StarLocation.RIMMINGTON_MINE;
 
         //draynor, lumbridge
-        if (containsIgnoreCase(text, "draynor"))
+        if (containsIgnoreCase(text, "dray"))
             return StarLocation.DRAYNOR_VILLAGE_BANK;
         if (containsAnyIgnoreCase(text, "lumbridge", "swamp", "lumby"))
             if (containsAnyIgnoreCase(text, "east", "se"))
@@ -98,19 +98,21 @@ public class StarLingo {
             return StarLocation.VARROCK_SOUTH_WEST_MINE;
         if (containsAnyIgnoreCase(text, "vse", "vme", "sev"))
             return StarLocation.VARROCK_SOUTH_EAST_MINE;
-        if (containsIgnoreCase(text, "veb"))
+        if (containsAnyIgnoreCase(text, "veb", "vb"))
             return StarLocation.VARROCK_AUBURY;
 
         //al kharid, pvp arena
+        if (containsAllIgnoreCase(text, "desert", "mine") || containsIgnoreCase(text, "akm"))
+            return StarLocation.AL_KHARID_MINE;
         if (containsAllIgnoreCase(text, "al", "kharid") || containsAnyIgnoreCase(text, "alk", "ally", "ak"))
             if (containsIgnoreCase(text, "bank"))
                 return StarLocation.AL_KHARID_BANK;
             else if (containsIgnoreCase(text, "mine"))
                 return StarLocation.AL_KHARID_MINE;
-        if (containsAllIgnoreCase(text, "desert", "mine"))
-            return StarLocation.AL_KHARID_MINE;
         if (containsAnyIgnoreCase(text, "duel", "da", "arena", "pvp", "pa"))
             return StarLocation.PVP_ARENA;
+        if (containsIgnoreCase(text, "akb"))
+            return StarLocation.AL_KHARID_BANK;
 
         //crandor, corsair cove
         if (containsIgnoreCase(text, "crandor"))
@@ -118,11 +120,21 @@ public class StarLingo {
                 return StarLocation.CRANDOR_NORTH_MINE;
             else if (containsIgnoreCase(text, "south"))
                 return StarLocation.CRANDOR_SOUTH_MINE;
+        if (containsIgnoreCase(text, "nc"))
+            return StarLocation.CRANDOR_NORTH_MINE;
+        if (containsIgnoreCase(text, "sc"))
+            return StarLocation.CRANDOR_SOUTH_MINE;
         if (containsIgnoreCase(text, "corsair"))
             if (containsIgnoreCase(text, "bank"))
                 return StarLocation.CORSAIR_COVE_BANK;
             else
                 return StarLocation.CORSAIR_COVE_RESOURCE_AREA;
+        if (containsIgnoreCase(text, "ogress"))
+            return StarLocation.CORSAIR_COVE_RESOURCE_AREA;
+        if (containsIgnoreCase(text, "cra"))
+            return StarLocation.CORSAIR_COVE_RESOURCE_AREA;
+        if (containsIgnoreCase(text, "ccb"))
+            return StarLocation.CORSAIR_COVE_BANK;
 
         //wildy
         if (containsAnyIgnoreCase(text, "wildy", "wilderness"))
@@ -136,6 +148,12 @@ public class StarLingo {
                 return StarLocation.WILDERNESS_SOUTH_MINE;
         if (containsAnyIgnoreCase(text, "rune", "runite", "lava", "maze", "rr"))
             return StarLocation.WILDERNESS_RUNITE_MINE;
+        if (containsIgnoreCase(text, "hobgob"))
+            return StarLocation.WILDERNESS_CENTRE_MINE;
+        if (containsIgnoreCase(text, "skeleton"))
+            return StarLocation.WILDERNESS_SOUTH_WEST_MINE;
+        if (containsIgnoreCase(text,"abyss"))
+            return StarLocation.WILDERNESS_SOUTH_MINE;
 
         //could not recognise location
         return null;
