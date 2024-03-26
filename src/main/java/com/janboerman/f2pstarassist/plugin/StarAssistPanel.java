@@ -131,7 +131,16 @@ public class StarAssistPanel extends PluginPanel {
 
             setToolTipText(tooltipText.toString());
 
-            final String text = "T" + star.getTier().getSize() + " W" + star.getWorld() + " " + star.getLocation();
+            final String text = this.config.callOutFormat
+
+            if(text.contains("{world}") && text.contains("{tier}") && text.contains("{location}")){ // if provided format is valid
+                text.replace("{world}", star.getWorld());
+                text.replace("{tier}", "T"+star.getTier().getSize());
+                text.replace("{location}", star.getLocation());
+            }else{ // otherwise default
+                text = "T" + star.getTier().getSize() + " W" + star.getWorld() + " " + star.getLocation();
+            }
+
             final JLabel textLabel = new JLabel(text);
             textLabel.setFont(FontManager.getRunescapeSmallFont());
             add(textLabel);

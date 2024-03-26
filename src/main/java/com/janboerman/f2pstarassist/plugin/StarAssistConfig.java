@@ -289,6 +289,19 @@ public interface StarAssistConfig extends Config {
 		return false;
 	}
 
+	@ConfigItem(
+			position = 15,
+			keyName = "call out format",
+			name = "call out format",
+			description = "Specify the format in which the callout is output.<br>" +
+					"{world} {tier} {location}:<br>" +
+					"eg. {world} {tier} {location} => \"W420 T5 Draynor <br>\""
+			section = MISCELLANEOUS
+	)
+	default String callOutFormat() {
+		return "{world} {tier} {location}";
+	}
+
 	//																							\\
 	// ========================================================================================	\\
 
